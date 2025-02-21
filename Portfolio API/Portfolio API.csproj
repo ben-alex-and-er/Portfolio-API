@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<RootNamespace>Portfolio_API</RootNamespace>
+		<UserSecretsId>edc010bc-da93-40f1-a467-c11730b7ac55</UserSecretsId>
+		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+		<DockerfileContext>.</DockerfileContext>
+		<GenerateDocumentationFile>True</GenerateDocumentationFile>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Folder Include="DataAccessors\Authentication\" />
+		<Folder Include="Providers\Authentication\" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\DTOs\DTOs.csproj" />
+		<ProjectReference Include="..\Requests\Requests.csproj" />
+		<ProjectReference Include="..\Responses\Responses.csproj" />
+	</ItemGroup>
+
+</Project>
