@@ -30,13 +30,42 @@ namespace Portfolio_API.DataAccessors
 		IQueryable<T> Read();
 	}
 
+	/// <summary>
+	/// Interface for Data Accessore with updating capabilities
+	/// </summary>
+	/// <typeparam name="T">Type to identify entry</typeparam>
+	/// <typeparam name="U">Type to change new value to</typeparam>
+	public interface IUpdate<T, U>
+	{
+		/// <summary>
+		/// Updates an entry in the db
+		/// </summary>
+		/// <param name="identifer"></param>
+		/// <param name="newValue"></param>
+		/// <returns></returns>
+		Task<DAStatus> Update(T identifer, U newValue);
+	}
+
+	/// <summary>
+	/// Interface for Data Accessore with deleting capabilities
+	/// </summary>
+	/// <typeparam name="T">Type to identify entry to delete</typeparam>
+	public interface IDelete<T>
+	{
+		/// <summary>
+		/// Deletes an entry from the db
+		/// </summary>
+		/// <param name="delete"></param>
+		/// <returns></returns>
+		Task<DAStatus> Delete(T delete);
+	}
+
 
 	/// <summary>
 	/// Interface for Data Accessors with create, read, update, delete capabilities
 	/// </summary>
 	/// <typeparam name="T">Input type to distinquish entry</typeparam>
 	/// <typeparam name="U">Output type to extract data</typeparam>
-	public interface ICRUD<T, U> : ICreate<T>, IRead<U>
-	{
-	}
+	/// <typeparam name="V">Input type to update data</typeparam>
+	public interface ICRUD<T, U, V> : ICreate<T>, IRead<U>, IUpdate<T, V>, IDelete<T> { }
 }
