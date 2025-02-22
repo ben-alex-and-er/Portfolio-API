@@ -6,6 +6,8 @@ namespace Portfolio_API.Configuration.ServiceSetup
 {
 	using Data;
 	using Interfaces;
+	using Providers.Database;
+	using Providers.Database.Interfaces;
 
 
 	/// <summary>
@@ -24,6 +26,8 @@ namespace Portfolio_API.Configuration.ServiceSetup
 
 				options.UseMySql(connection.ToString(), ServerVersion.AutoDetect(connection.ToString()));
 			});
+
+			services.AddTransient<ITransactionManager, TransactionManager>();
 		}
 	}
 }
