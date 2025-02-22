@@ -12,11 +12,15 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<Folder Include="DataAccessors\Authentication\" />
 		<Folder Include="Providers\Authentication\" />
 	</ItemGroup>
 
 	<ItemGroup>
+	  <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="8.0.2" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Database\Database.csproj" />
 		<ProjectReference Include="..\DTOs\DTOs.csproj" />
 		<ProjectReference Include="..\Requests\Requests.csproj" />
 		<ProjectReference Include="..\Responses\Responses.csproj" />

@@ -28,6 +28,16 @@ namespace Portfolio_API.Controllers.Authentication
 
 
 		/// <summary>
+		/// Adds a new user to the system
+		/// </summary>
+		/// <param name="loginRequest"></param>
+		/// <returns></returns>
+		[HttpPost("adduser")]
+		public Task<bool> AddUser(LoginRequest loginRequest)
+			=> authenticationService.AddUser(loginRequest);
+
+
+		/// <summary>
 		/// Login a user using username and password
 		/// </summary>
 		/// <param name="loginRequest"></param>
