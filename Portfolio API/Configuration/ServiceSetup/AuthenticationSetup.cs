@@ -1,8 +1,13 @@
-﻿namespace Portfolio_API.Configuration.ServiceSetup
+﻿using Microsoft.AspNetCore.Identity;
+
+
+namespace Portfolio_API.Configuration.ServiceSetup
 {
 	using DataAccessors.Authentication;
 	using DataAccessors.Authentication.Interfaces;
 	using Interfaces;
+	using Providers.Authentication;
+	using Providers.Authentication.Interfaces;
 	using Services.Authentication;
 	using Services.Authentication.Interfaces;
 
@@ -19,6 +24,9 @@
 			services.AddTransient<IUserPasswordDA, UserPasswordDA>();
 
 			services.AddTransient<IAuthenticationService, AuthenticationService>();
+
+			services.AddSingleton<IPasswordHasher<string>, PasswordHasher<string>>();
+			services.AddSingleton<IHasher, Hasher>();
 		}
 	}
 }

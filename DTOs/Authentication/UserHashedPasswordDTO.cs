@@ -1,9 +1,9 @@
 ﻿namespace DTOs.Authentication
 {
 	/// <summary>
-	/// DTO containing a username and password
+	/// DTO containing a username and hashed password
 	/// </summary>
-	public record LoginDTO
+	public class UserHashedPasswordDTO
 	{
 		/// <summary>
 		/// User's identifier
@@ -13,23 +13,23 @@
 		/// <summary>
 		/// User's hashed password
 		/// </summary>
-		public string Password { get; init; }
+		public HashedPassword HashedPassword { get; init; }
 
 
 		/// <summary>
 		/// Constructor to be used for entity framework ONLY
 		/// </summary>
-		public LoginDTO() { }
+		public UserHashedPasswordDTO() { }
 
 		/// <summary>
-		/// Constructor for <see cref="LoginDTO"/>
+		/// Constructor for <see cref="UserHashedPasswordDTO"/>
 		/// </summary>
 		/// <param name="username"></param>
-		/// <param name="password"></param>
-		public LoginDTO(string username, string password)
+		/// <param name="hashedPassword"></param>
+		public UserHashedPasswordDTO(string username, HashedPassword hashedPassword)
 		{
 			User = username;
-			Password = password;
+			HashedPassword = hashedPassword;
 		}
 	}
 }

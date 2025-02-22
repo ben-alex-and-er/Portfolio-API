@@ -27,7 +27,7 @@ namespace Portfolio_API.DataAccessors.Authentication
 		}
 
 
-		async Task<DAStatus> ICreate<LoginDTO>.Create(LoginDTO create)
+		async Task<DAStatus> ICreate<UserHashedPasswordDTO>.Create(UserHashedPasswordDTO create)
 		{
 			var userEntry = await context.Users
 				.FirstOrDefaultAsync(identifier => identifier.Identifier == create.User);
@@ -36,7 +36,7 @@ namespace Portfolio_API.DataAccessors.Authentication
 				return DAStatus.INVALID_ARGUMENTS;
 
 			var passwordEntry = await context.Passwords
-				.FirstOrDefaultAsync(password => password.Hash == create.Password);
+				.FirstOrDefaultAsync(password => password.Hash == create.HashedPassword.Hash);
 
 			if (passwordEntry == null)
 				return DAStatus.INVALID_ARGUMENTS;
@@ -55,13 +55,13 @@ namespace Portfolio_API.DataAccessors.Authentication
 			return DAStatus.SUCCESS;
 		}
 
-		IQueryable<LoginDTO> IRead<LoginDTO>.Read()
+		IQueryable<UserHashedPasswordDTO> IRead<UserHashedPasswordDTO>.Read()
 			=> context.UserPasswords
 				.AsNoTracking()
-				.Select(userPassword => new LoginDTO
+				.Select(userPassword => new UserHashedPasswordDTO
 				{
 					User = userPassword.User.Identifier,
-					Password = userPassword.Password.Hash,
+					HashedPassword = userPassword.Password.Hash,
 				});
 	}
 }

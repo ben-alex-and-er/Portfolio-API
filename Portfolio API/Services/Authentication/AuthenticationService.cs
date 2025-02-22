@@ -1,6 +1,8 @@
 ﻿using DTOs.Authentication;
 using DTOs.Authentication.Interfaces;
 using DTOs.Generic.Enums;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 
 
@@ -8,6 +10,7 @@ namespace Portfolio_API.Services.Authentication
 {
 	using DataAccessors.Authentication.Interfaces;
 	using Interfaces;
+	using Providers.Authentication.Interfaces;
 
 
 	/// <summary>
@@ -15,6 +18,8 @@ namespace Portfolio_API.Services.Authentication
 	/// </summary>
 	public class AuthenticationService : IAuthenticationService
 	{
+		private readonly IHasher passwordHasher;
+
 		private readonly IPasswordDA passwordDA;
 
 		private readonly IUserDA userDA;
@@ -25,14 +30,17 @@ namespace Portfolio_API.Services.Authentication
 		/// <summary>
 		/// Constructor for <see cref="AuthenticationService"/>
 		/// </summary>
+		/// <param name="passwordHasher"></param>
 		/// <param name="passwordDA"></param>
 		/// <param name="userDA"></param>
 		/// <param name="userPasswordDA"></param>
 		public AuthenticationService(
+			IHasher passwordHasher,
 			IPasswordDA passwordDA,
 			IUserDA userDA,
 			IUserPasswordDA userPasswordDA)
 		{
+			this.passwordHasher = passwordHasher;
 			this.passwordDA = passwordDA;
 			this.userDA = userDA;
 			this.userPasswordDA = userPasswordDA;
@@ -47,13 +55,15 @@ namespace Portfolio_API.Services.Authentication
 				return false;
 
 
-			var password = await passwordDA.Create(request.Password);
+			var hashedPassword = passwordHasher.HashPassword(request.Password);
+
+			var password = await passwordDA.Create(hashedPassword);
 
 			if (password != DAStatus.SUCCESS)
 				return false;
 
 
-			var userPassword = await userPasswordDA.Create(new LoginDTO(request.Username, request.Password));
+			var userPassword = await userPasswordDA.Create(new UserHashedPasswordDTO(request.Username, hashedPassword));
 
 			if (userPassword != DAStatus.SUCCESS)
 				return false;
@@ -63,14 +73,35 @@ namespace Portfolio_API.Services.Authentication
 		}
 
 
-		Task<bool> IAuthenticationService.Login(ILogin request)
+		async Task<bool> IAuthenticationService.Login(ILogin request)
 		{
-			var correctAuth = userPasswordDA.Read()
+			var userPassword = await userPasswordDA.Read()
 				.Where(userPassword => userPassword.User == request.Username)
-				.Where(userPassword => userPassword.Password == request.Password)
-				.AnyAsync();
+				.FirstOrDefaultAsync();
 
-			return correctAuth;
+			if (userPassword == null)
+				return false;
+
+
+			var verifyPassword = passwordHasher.VerifyHashedPassword(userPassword.HashedPassword, request.Password);
+
+
+			if (verifyPassword == PasswordVerificationResult.Failed)
+				return false;
+
+
+			if (verifyPassword == PasswordVerificationResult.SuccessRehashNeeded)
+			{
+				var newHash = passwordHasher.HashPassword(request.Password);
+
+				var rehashPassword = await passwordDA.Update(userPassword.HashedPassword, newHash);
+
+				if (rehashPassword == DAStatus.INVALID_ARGUMENTS)
+					return false;
+			}
+
+
+			return true;
 		}
 	}
 }
