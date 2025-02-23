@@ -1,7 +1,6 @@
 ﻿using DTOs.Authentication;
 using DTOs.Authentication.Interfaces;
 using DTOs.Generic.Enums;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,8 +9,8 @@ namespace Portfolio_API.Services.Authentication
 {
 	using DataAccessors.Authentication.Interfaces;
 	using Interfaces;
+	using Providers.Authentication;
 	using Providers.Database.Interfaces;
-	using Providers.Authentication.Interfaces;
 
 
 	/// <summary>
@@ -20,8 +19,6 @@ namespace Portfolio_API.Services.Authentication
 	public class AuthenticationService : IAuthenticationService
 	{
 		private readonly ITransactionManager transactionManager;
-
-		private readonly IHasher passwordHasher;
 
 		private readonly IPasswordDA passwordDA;
 
@@ -34,19 +31,16 @@ namespace Portfolio_API.Services.Authentication
 		/// Constructor for <see cref="AuthenticationService"/>
 		/// </summary>
 		/// <param name="transactionManager"></param>
-		/// <param name="passwordHasher"></param>
 		/// <param name="passwordDA"></param>
 		/// <param name="userDA"></param>
 		/// <param name="userPasswordDA"></param>
 		public AuthenticationService(
 			ITransactionManager transactionManager,
-			IHasher passwordHasher,
 			IPasswordDA passwordDA,
 			IUserDA userDA,
 			IUserPasswordDA userPasswordDA)
 		{
 			this.transactionManager = transactionManager;
-			this.passwordHasher = passwordHasher;
 			this.passwordDA = passwordDA;
 			this.userDA = userDA;
 			this.userPasswordDA = userPasswordDA;
@@ -64,7 +58,7 @@ namespace Portfolio_API.Services.Authentication
 				return false;
 
 
-			var hashedPassword = passwordHasher.HashPassword(request.Password);
+			var hashedPassword = PasswordHasher.HashPassword(request.Password);
 
 			var password = await passwordDA.Create(hashedPassword);
 
@@ -94,25 +88,9 @@ namespace Portfolio_API.Services.Authentication
 				return false;
 
 
-			var verifyPassword = passwordHasher.VerifyHashedPassword(userPassword.HashedPassword, request.Password);
+			var verifyPassword = PasswordHasher.VerifyPassword(request.Password, userPassword.HashedPassword);
 
-
-			if (verifyPassword == PasswordVerificationResult.Failed)
-				return false;
-
-
-			if (verifyPassword == PasswordVerificationResult.SuccessRehashNeeded)
-			{
-				var newHash = passwordHasher.HashPassword(request.Password);
-
-				var rehashPassword = await passwordDA.Update(userPassword.HashedPassword, newHash);
-
-				if (rehashPassword == DAStatus.INVALID_ARGUMENTS)
-					return false;
-			}
-
-
-			return true;
+			return verifyPassword;
 		}
 	}
 }

@@ -36,7 +36,7 @@ namespace Portfolio_API.DataAccessors.Authentication
 				return DAStatus.INVALID_ARGUMENTS;
 
 			var passwordEntry = await context.Passwords
-				.FirstOrDefaultAsync(password => password.Hash == create.HashedPassword.Hash);
+				.FirstOrDefaultAsync(password => password.Hash == create.HashedPassword.ToString());
 
 			if (passwordEntry == null)
 				return DAStatus.INVALID_ARGUMENTS;
@@ -61,7 +61,7 @@ namespace Portfolio_API.DataAccessors.Authentication
 				.Select(userPassword => new UserHashedPasswordDTO
 				{
 					User = userPassword.User.Identifier,
-					HashedPassword = userPassword.Password.Hash,
+					HashedPassword = new(userPassword.Password.Hash),
 				});
 	}
 }

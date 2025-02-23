@@ -30,14 +30,14 @@ namespace Portfolio_API.DataAccessors.Authentication
 		async Task<DAStatus> ICreate<HashedPassword>.Create(HashedPassword create)
 		{
 			var exists = await context.Passwords
-				.AnyAsync(user => user.Hash == create.Hash);
+				.AnyAsync(user => user.Hash == create.ToString());
 
 			if (exists)
 				return DAStatus.INVALID_ARGUMENTS;
 
 			context.Passwords.Add(new Password
 			{
-				Hash = create.Hash,
+				Hash = create.ToString(),
 			});
 
 			await context.SaveChangesAsync();
@@ -48,12 +48,12 @@ namespace Portfolio_API.DataAccessors.Authentication
 		async Task<DAStatus> IUpdate<HashedPassword, HashedPassword>.Update(HashedPassword identifer, HashedPassword newValue)
 		{
 			var entry = await context.Passwords
-				.FirstOrDefaultAsync(password => password.Hash == identifer.Hash);
+				.FirstOrDefaultAsync(password => password.Hash == identifer.ToString());
 
 			if (entry == null)
 				return DAStatus.INVALID_ARGUMENTS;
 
-			entry.Hash = newValue.Hash;
+			entry.Hash = newValue.ToString();
 
 			await context.SaveChangesAsync();
 
