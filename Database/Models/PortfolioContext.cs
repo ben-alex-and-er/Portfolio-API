@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Pomelo.EntityFrameworkCore.MySql.Scaffolding.Internal;
@@ -38,6 +38,8 @@ public partial class PortfolioContext : DbContext
 
             entity.ToTable("password");
 
+            entity.HasIndex(e => e.Hash, "hash").IsUnique();
+
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Hash)
                 .HasMaxLength(750)
@@ -49,6 +51,8 @@ public partial class PortfolioContext : DbContext
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 
             entity.ToTable("user");
+
+            entity.HasIndex(e => e.Identifier, "identifier").IsUnique();
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Identifier)
