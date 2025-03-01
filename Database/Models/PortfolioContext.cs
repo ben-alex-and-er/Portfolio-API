@@ -120,12 +120,12 @@ public partial class PortfolioContext : DbContext
 
             entity.ToTable("role");
 
-            entity.HasIndex(e => e.Role1, "role").IsUnique();
+            entity.HasIndex(e => e.Name, "name").IsUnique();
 
             entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Role1)
+            entity.Property(e => e.Name)
                 .HasMaxLength(100)
-                .HasColumnName("role");
+                .HasColumnName("name");
         });
 
         modelBuilder.Entity<RoleClaim>(entity =>

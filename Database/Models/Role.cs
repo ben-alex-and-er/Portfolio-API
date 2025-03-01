@@ -7,7 +7,7 @@ public partial class Role
 {
     public uint Id { get; set; }
 
-    public string Role1 { get; set; } = null!;
+    public string Name { get; set; } = null!;
 
     public virtual ICollection<RoleClaim> RoleClaims { get; set; } = new List<RoleClaim>();
 
