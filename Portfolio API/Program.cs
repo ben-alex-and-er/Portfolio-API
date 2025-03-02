@@ -7,8 +7,9 @@ internal class Program
 	private static void AddServices(IHostApplicationBuilder builder)
 	{
 		builder.Services
+			.AddServiceSetup<AuthenticationSetup>()
 			.AddServiceSetup<DatabaseSetup>()
-			.AddServiceSetup<AuthenticationSetup>();
+			.AddServiceSetup<PermissionsSetup>()
 	}
 
 	private static void Main(string[] args)
