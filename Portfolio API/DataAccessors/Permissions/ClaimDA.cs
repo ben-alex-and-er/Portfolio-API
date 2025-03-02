@@ -56,7 +56,13 @@ namespace Portfolio_API.DataAccessors.Permissions
 
 			if (typeEntry == null)
 			{
-				await claimTypeDA.Create(create.Type);
+				var createType = await claimTypeDA.Create(create.Type);
+
+				if (createType == DAStatus.INVALID_ARGUMENTS)
+					return DAStatus.INVALID_ARGUMENTS;
+
+				typeEntry = await context.ClaimTypes
+					.FirstOrDefaultAsync(type => type.Type == create.Type);
 			}
 
 			var valueEntry = await context.ClaimValues
@@ -64,7 +70,13 @@ namespace Portfolio_API.DataAccessors.Permissions
 
 			if (valueEntry == null)
 			{
-				await claimValueDA.Create(create.Value);
+				var createValue = await claimValueDA.Create(create.Value);
+
+				if (createValue == DAStatus.INVALID_ARGUMENTS)
+					return DAStatus.INVALID_ARGUMENTS;
+
+				valueEntry = await context.ClaimValues
+					.FirstOrDefaultAsync(value => value.Value == create.Value);
 			}
 
 			context.Claims.Add(new Claim
@@ -78,5 +90,15 @@ namespace Portfolio_API.DataAccessors.Permissions
 
 			return DAStatus.SUCCESS;
 		}
+
+		IQueryable<ClaimDTO> IRead<ClaimDTO>.Read()
+			=> context.Claims
+				.AsNoTracking()
+				.Select(claim => new ClaimDTO
+				{
+					Type = claim.ClaimType.Type,
+					Value = claim.ClaimValue.Value,
+					Guid = claim.Guid
+				});
 	}
 }

@@ -1,8 +1,10 @@
 ﻿namespace Portfolio_API.Configuration.ServiceSetup
 {
-	using Interfaces;
 	using DataAccessors.Permissions;
 	using DataAccessors.Permissions.Interfaces;
+	using Interfaces;
+	using Services.Permissions;
+	using Services.Permissions.Interface;
 
 
 	/// <summary>
@@ -17,6 +19,8 @@
 			services.AddTransient<IClaimValueDA, ClaimValueDA>();
 			services.AddTransient<IRoleClaimDA, RoleClaimDA>();
 			services.AddTransient<IUserRoleDA, UserRoleDA>();
+
+			services.AddTransient<IClaimService, ClaimService>();
 		}
 	}
 }
