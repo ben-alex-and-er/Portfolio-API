@@ -1,4 +1,5 @@
 ﻿using DTOs.Authentication.Interfaces;
+using Responses.Authentication;
 
 
 namespace Portfolio_API.Services.Authentication.Interfaces
@@ -21,6 +22,6 @@ namespace Portfolio_API.Services.Authentication.Interfaces
 		/// </summary>
 		/// <param name="request"></param>
 		/// <returns></returns>
-		Task<bool> Login(ILogin request);
+		Task<LoginResponse> Login(ILogin request);
 	}
 }

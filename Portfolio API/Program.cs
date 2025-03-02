@@ -10,6 +10,7 @@ internal class Program
 			.AddServiceSetup<AuthenticationSetup>()
 			.AddServiceSetup<DatabaseSetup>()
 			.AddServiceSetup<PermissionsSetup>()
+			.AddServiceSetup<SecuritySetup>();
 	}
 
 	private static void Main(string[] args)

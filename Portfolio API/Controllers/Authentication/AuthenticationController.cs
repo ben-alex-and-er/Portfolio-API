@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Requests.Authentication;
+using Responses.Authentication;
 
 
 namespace Portfolio_API.Controllers.Authentication
@@ -43,7 +44,7 @@ namespace Portfolio_API.Controllers.Authentication
 		/// <param name="loginRequest"></param>
 		/// <returns></returns>
 		[HttpPost("login")]
-		public Task<bool> Login(LoginRequest loginRequest)
+		public Task<LoginResponse> Login(LoginRequest loginRequest)
 			=> authenticationService.Login(loginRequest);
 	}
 }
